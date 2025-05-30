@@ -1,0 +1,9 @@
+let mapleader = "`"
+highlight Normal guibg=none
+highlight NonText guibg=none
+highlight Normal ctermbg=none
+highlight NonText ctermbg=none
+vnoremap <leader>y "+y
+nnoremap <leader>y "+yy
+set nowrap
+
