@@ -23,13 +23,8 @@ require("lazy").setup({
     config = function()
       require("mason").setup()
       require("mason-lspconfig").setup({
-        --ensure_installed = { "tsserver", "eslint" },
-        ensure_installed = { "ts_ls", "eslint" },
+        ensure_installed = { "ts_ls", "eslint", "tailwindcss" },
       })
-      local lspconfig = require("lspconfig")
-      --lspconfig.tsserver.setup({})
-      lspconfig.eslint.setup({})
-      require("lspconfig").ts_ls.setup({})
     end,
   },
   -- Autocompletion
@@ -48,61 +43,99 @@ require("lazy").setup({
           end,
         },
         mapping = cmp.mapping.preset.insert({
-          ["<Tab>"] = cmp.mapping.select_next_item(),
-          ["<S-Tab>"] = cmp.mapping.select_prev_item(),
+          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+          ["<C-f>"] = cmp.mapping.scroll_docs(4),
+          ["<C-Space>"] = cmp.mapping.complete(),
+          ["<C-e>"] = cmp.mapping.abort(),
           ["<CR>"] = cmp.mapping.confirm({ select = true }),
         }),
-        sources = {
+        sources = cmp.config.sources({
           { name = "nvim_lsp" },
-        },
+          { name = "buffer" },
+        }),
       })
     end,
   },
-  -- Treesitter for syntax highlighting
+  -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
       require("nvim-treesitter.configs").setup({
-        ensure_installed = { "typescript", "javascript", "lua", "html", "css" },
+        ensure_installed = { "tsx", "typescript", "javascript", "html", "css", "lua" },
         highlight = { enable = true },
+        indent = { enable = true },
+      })
+    end,
+  },
+  -- Tailwind CSS colorizer
+  {
+    "NvChad/nvim-colorizer.lua",
+    config = function()
+      require("colorizer").setup({
+        user_default_options = {
+          tailwind = true,
+        },
+      })
+    end,
+  },
+  -- Status line
+  {
+    "nvim-lualine/lualine.nvim",
+    dependencies = { "kyazdani42/nvim-web-devicons" },
+    config = function()
+      require("lualine").setup({
+        options = {
+          theme = "auto",
+          section_separators = { left = "", right = "" },
+          component_separators = { left = "", right = "" },
+        },
       })
     end,
   },
   -- File explorer
   {
-    "nvim-tree/nvim-tree.lua",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    "kyazdani42/nvim-tree.lua",
+    dependencies = { "kyazdani42/nvim-web-devicons" },
     config = function()
       require("nvim-tree").setup()
     end,
   },
-  -- Telescope for fuzzy finding
+  -- Telescope
   {
     "nvim-telescope/telescope.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
   },
-  -- Better comments
+  -- Git signs
   {
-    "folke/todo-comments.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    "lewis6991/gitsigns.nvim",
     config = function()
-      require("todo-comments").setup()
+      require("gitsigns").setup()
     end,
   },
-  -- Transparency
   {
-    "xiyaowong/transparent.nvim",
-    config = function()
-      require("transparent").setup({
-        enable = true,
-        extra_groups = {
-          "NormalFloat",
-          "NvimTreeNormal",
-          "TelescopeNormal",
-        },
-      })
-    end,
-  },
+  "xiyaowong/transparent.nvim",
+  config = function()
+    require("transparent").setup {
+      enable = true,
+      extra_groups = {
+        "NormalFloat", "NvimTreeNormal", "NormalNC", "TelescopeNormal",
+        "TelescopeBorder", "TelescopePromptNormal", "TelescopePromptBorder",
+        "TelescopePromptTitle", "TelescopePreviewTitle", "TelescopeResultsTitle",
+      },
+      exclude_groups = {},
+    }
+  end,
+},
+  {
+  "folke/tokyonight.nvim",
+  config = function()
+    require("tokyonight").setup({
+      transparent = true,
+      -- You can add other options here as needed
+    })
+    vim.cmd("colorscheme tokyonight")
+  end,
+}
 })
 

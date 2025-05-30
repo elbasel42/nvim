@@ -16,4 +16,4 @@ keymap.set("n", "<leader>f", ":Telescope find_files<CR>")
 
 -- Open Telescope live_grep
 keymap.set("n", "<leader>g", ":Telescope live_grep<CR>")
-
+ 
